@@ -40,3 +40,45 @@ D:\HackathonSabreBot\HackathonSabreBot\obj\Release\Bot Application1.pdb
 D:\HackathonSabreBot\HackathonSabreBot\bin\Flurl.dll
 D:\HackathonSabreBot\HackathonSabreBot\bin\Flurl.pdb
 D:\HackathonSabreBot\HackathonSabreBot\bin\Flurl.xml
+C:\Users\nixho\Source\Repos\SabreDest2016\HackathonSabreBot\bin\Bot Application1.dll.config
+C:\Users\nixho\Source\Repos\SabreDest2016\HackathonSabreBot\bin\Bot Application1.dll
+C:\Users\nixho\Source\Repos\SabreDest2016\HackathonSabreBot\bin\Bot Application1.pdb
+C:\Users\nixho\Source\Repos\SabreDest2016\HackathonSabreBot\bin\Autofac.dll
+C:\Users\nixho\Source\Repos\SabreDest2016\HackathonSabreBot\bin\Chronic.dll
+C:\Users\nixho\Source\Repos\SabreDest2016\HackathonSabreBot\bin\Flurl.dll
+C:\Users\nixho\Source\Repos\SabreDest2016\HackathonSabreBot\bin\Microsoft.Bot.Builder.dll
+C:\Users\nixho\Source\Repos\SabreDest2016\HackathonSabreBot\bin\Microsoft.Bot.Connector.dll
+C:\Users\nixho\Source\Repos\SabreDest2016\HackathonSabreBot\bin\Microsoft.IdentityModel.Protocol.Extensions.dll
+C:\Users\nixho\Source\Repos\SabreDest2016\HackathonSabreBot\bin\Microsoft.Rest.ClientRuntime.dll
+C:\Users\nixho\Source\Repos\SabreDest2016\HackathonSabreBot\bin\Microsoft.WindowsAzure.Configuration.dll
+C:\Users\nixho\Source\Repos\SabreDest2016\HackathonSabreBot\bin\Newtonsoft.Json.dll
+C:\Users\nixho\Source\Repos\SabreDest2016\HackathonSabreBot\bin\System.IdentityModel.Tokens.Jwt.dll
+C:\Users\nixho\Source\Repos\SabreDest2016\HackathonSabreBot\bin\System.Net.Http.Formatting.dll
+C:\Users\nixho\Source\Repos\SabreDest2016\HackathonSabreBot\bin\System.Web.Http.dll
+C:\Users\nixho\Source\Repos\SabreDest2016\HackathonSabreBot\bin\System.Web.Http.WebHost.dll
+C:\Users\nixho\Source\Repos\SabreDest2016\HackathonSabreBot\bin\Autofac.xml
+C:\Users\nixho\Source\Repos\SabreDest2016\HackathonSabreBot\bin\Flurl.pdb
+C:\Users\nixho\Source\Repos\SabreDest2016\HackathonSabreBot\bin\Flurl.xml
+C:\Users\nixho\Source\Repos\SabreDest2016\HackathonSabreBot\bin\Microsoft.Bot.Builder.xml
+C:\Users\nixho\Source\Repos\SabreDest2016\HackathonSabreBot\bin\Microsoft.Bot.Connector.xml
+C:\Users\nixho\Source\Repos\SabreDest2016\HackathonSabreBot\bin\Microsoft.IdentityModel.Protocol.Extensions.pdb
+C:\Users\nixho\Source\Repos\SabreDest2016\HackathonSabreBot\bin\Microsoft.IdentityModel.Protocol.Extensions.xml
+C:\Users\nixho\Source\Repos\SabreDest2016\HackathonSabreBot\bin\Microsoft.Rest.ClientRuntime.xml
+C:\Users\nixho\Source\Repos\SabreDest2016\HackathonSabreBot\bin\Microsoft.WindowsAzure.Configuration.xml
+C:\Users\nixho\Source\Repos\SabreDest2016\HackathonSabreBot\bin\Newtonsoft.Json.xml
+C:\Users\nixho\Source\Repos\SabreDest2016\HackathonSabreBot\bin\System.IdentityModel.Tokens.Jwt.pdb
+C:\Users\nixho\Source\Repos\SabreDest2016\HackathonSabreBot\bin\System.IdentityModel.Tokens.Jwt.xml
+C:\Users\nixho\Source\Repos\SabreDest2016\HackathonSabreBot\bin\System.Net.Http.Formatting.xml
+C:\Users\nixho\Source\Repos\SabreDest2016\HackathonSabreBot\bin\System.Web.Http.xml
+C:\Users\nixho\Source\Repos\SabreDest2016\HackathonSabreBot\bin\System.Web.Http.WebHost.xml
+C:\Users\nixho\Source\Repos\SabreDest2016\HackathonSabreBot\bin\ar\Microsoft.Bot.Builder.resources.dll
+C:\Users\nixho\Source\Repos\SabreDest2016\HackathonSabreBot\bin\en\Microsoft.Bot.Builder.resources.dll
+C:\Users\nixho\Source\Repos\SabreDest2016\HackathonSabreBot\bin\es\Microsoft.Bot.Builder.resources.dll
+C:\Users\nixho\Source\Repos\SabreDest2016\HackathonSabreBot\bin\fa\Microsoft.Bot.Builder.resources.dll
+C:\Users\nixho\Source\Repos\SabreDest2016\HackathonSabreBot\bin\fr\Microsoft.Bot.Builder.resources.dll
+C:\Users\nixho\Source\Repos\SabreDest2016\HackathonSabreBot\bin\ja\Microsoft.Bot.Builder.resources.dll
+C:\Users\nixho\Source\Repos\SabreDest2016\HackathonSabreBot\bin\ru\Microsoft.Bot.Builder.resources.dll
+C:\Users\nixho\Source\Repos\SabreDest2016\HackathonSabreBot\bin\zh-hans\Microsoft.Bot.Builder.resources.dll
+C:\Users\nixho\Source\Repos\SabreDest2016\HackathonSabreBot\obj\Release\HackathonSabreBot.csprojResolveAssemblyReference.cache
+C:\Users\nixho\Source\Repos\SabreDest2016\HackathonSabreBot\obj\Release\Bot Application1.dll
+C:\Users\nixho\Source\Repos\SabreDest2016\HackathonSabreBot\obj\Release\Bot Application1.pdb
