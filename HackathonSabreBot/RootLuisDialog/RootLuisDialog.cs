@@ -2,6 +2,7 @@
 using Microsoft.Bot.Builder.Luis;
 using Microsoft.Bot.Builder.Luis.Models;
 using Microsoft.Bot.Connector;
+using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -95,7 +96,19 @@ namespace HackathonSabreBot.RootLuisDialog
                 if (response.IsSuccessStatusCode)
                 {
                     string responseString = response.Content.ReadAsStringAsync().Result;
-                    await context.PostAsync(responseString);
+                    JToken token = JObject.Parse(responseString);
+
+                    dynamic bunchOfObj = token.SelectToken("PricedItineraries");
+
+                    for (int i = 0; i < bunchOfObj.length(); i++) {
+                        dynamic secondObj = bunchOfObj[i].AirItinerary.OriginDestinationOptions;
+                        for (int x = 0; x < secondObj.length(); x++) {
+                            dynamic thirdObj = secondObj[x].LocationCode;
+                            await context.PostAsync(thirdObj);
+                        }
+                    }
+
+                    
                 }
                 else {
                     await context.PostAsync("THIS DID NOT WORK!!!");
