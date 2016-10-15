@@ -1,9 +1,15 @@
-﻿using Newtonsoft.Json;
+﻿using HackathonSabreBot.Resources;
+using HackathonSabreBot.Tools;
+using Newtonsoft.Json;
 using Newtonsoft.Json.Serialization;
 using System;
 using System.Collections.Generic;
+using System.Dynamic;
+using System.IO;
 using System.Linq;
+using System.Reflection;
 using System.Web.Http;
+using System.Xml.Linq;
 
 namespace HackathonSabreBot
 {

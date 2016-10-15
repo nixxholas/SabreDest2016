@@ -10,6 +10,11 @@ using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Text;
 using System.Threading.Tasks;
+using HackathonSabreBot.Tools;
+using System.Web.Script.Serialization;
+using System.Reflection;
+using Newtonsoft.Json;
+using HackathonSabreBot.Resources;
 
 namespace HackathonSabreBot.RootLuisDialog
 {
@@ -21,10 +26,51 @@ namespace HackathonSabreBot.RootLuisDialog
         private const string EntityBookTo = "Location::ToLocation";
         private const string EntityDate = "builtin.datetime.date";
 
+        // Define some global thangs here
+        public static List<Airport> airportsList;
+
+        public static void initializeAirportsList()
+        {
+            // https://social.msdn.microsoft.com/Forums/vstudio/en-US/57c56fe7-eb29-45b5-93d6-faf3845d21d8/how-to-load-the-xml-file-in-solution-path-cnet?forum=csharpgeneral
+            string path = Path.Combine(Path.GetDirectoryName(Assembly.GetEntryAssembly().Location), @"Resources\", "Airports.json");
+            var result = JsonConvert.DeserializeObject<RootObject>(path);
+            foreach (var airport in result.airports)
+            {
+                airportsList.Add(new Airport
+                {
+                    Name = airport.Name,
+                    Country = airport.Country,
+                    City = airport.City,
+                    Code = airport.Code,
+                    Lat = airport.Lat,
+                    Long = airport.Long,
+                    Timezone = airport.Timezone
+                });
+            }
+        }
+
         [LuisIntent("")]
         [LuisIntent("None")]
         public async Task None(IDialogContext context, LuisResult result)
         {
+            if (airportsList.Count < 2)
+            {
+                initializeAirportsList();
+            }
+            //string iii = Convert.ToString(item["airports"]);
+
+            try
+            {
+                await context.PostAsync("Working");
+                foreach (Airport airport in airportsList)
+                {
+                    await context.PostAsync(airport.Code);
+                }
+            }
+            catch (Exception e)
+            {
+                await context.PostAsync(e.ToString());
+            }
             string message = $"Sorry, I did not understand '{result.Query}'. Please type in this format 'Book a flight from Singapore to Hong Kong from 20th October to 27 October'";
 
             await context.PostAsync(message);
