@@ -1,0 +1,42 @@
+D:\HackathonSabreBot\HackathonSabreBot\bin\Bot Application1.dll.config
+D:\HackathonSabreBot\HackathonSabreBot\bin\Bot Application1.dll
+D:\HackathonSabreBot\HackathonSabreBot\bin\Bot Application1.pdb
+D:\HackathonSabreBot\HackathonSabreBot\bin\Autofac.dll
+D:\HackathonSabreBot\HackathonSabreBot\bin\Chronic.dll
+D:\HackathonSabreBot\HackathonSabreBot\bin\Microsoft.Bot.Builder.dll
+D:\HackathonSabreBot\HackathonSabreBot\bin\Microsoft.Bot.Connector.dll
+D:\HackathonSabreBot\HackathonSabreBot\bin\Microsoft.IdentityModel.Protocol.Extensions.dll
+D:\HackathonSabreBot\HackathonSabreBot\bin\Microsoft.Rest.ClientRuntime.dll
+D:\HackathonSabreBot\HackathonSabreBot\bin\Microsoft.WindowsAzure.Configuration.dll
+D:\HackathonSabreBot\HackathonSabreBot\bin\Newtonsoft.Json.dll
+D:\HackathonSabreBot\HackathonSabreBot\bin\System.IdentityModel.Tokens.Jwt.dll
+D:\HackathonSabreBot\HackathonSabreBot\bin\System.Net.Http.Formatting.dll
+D:\HackathonSabreBot\HackathonSabreBot\bin\System.Web.Http.dll
+D:\HackathonSabreBot\HackathonSabreBot\bin\System.Web.Http.WebHost.dll
+D:\HackathonSabreBot\HackathonSabreBot\bin\Autofac.xml
+D:\HackathonSabreBot\HackathonSabreBot\bin\Microsoft.Bot.Builder.xml
+D:\HackathonSabreBot\HackathonSabreBot\bin\Microsoft.Bot.Connector.xml
+D:\HackathonSabreBot\HackathonSabreBot\bin\Microsoft.IdentityModel.Protocol.Extensions.pdb
+D:\HackathonSabreBot\HackathonSabreBot\bin\Microsoft.IdentityModel.Protocol.Extensions.xml
+D:\HackathonSabreBot\HackathonSabreBot\bin\Microsoft.Rest.ClientRuntime.xml
+D:\HackathonSabreBot\HackathonSabreBot\bin\Microsoft.WindowsAzure.Configuration.xml
+D:\HackathonSabreBot\HackathonSabreBot\bin\Newtonsoft.Json.xml
+D:\HackathonSabreBot\HackathonSabreBot\bin\System.IdentityModel.Tokens.Jwt.pdb
+D:\HackathonSabreBot\HackathonSabreBot\bin\System.IdentityModel.Tokens.Jwt.xml
+D:\HackathonSabreBot\HackathonSabreBot\bin\System.Net.Http.Formatting.xml
+D:\HackathonSabreBot\HackathonSabreBot\bin\System.Web.Http.xml
+D:\HackathonSabreBot\HackathonSabreBot\bin\System.Web.Http.WebHost.xml
+D:\HackathonSabreBot\HackathonSabreBot\bin\ar\Microsoft.Bot.Builder.resources.dll
+D:\HackathonSabreBot\HackathonSabreBot\bin\en\Microsoft.Bot.Builder.resources.dll
+D:\HackathonSabreBot\HackathonSabreBot\bin\es\Microsoft.Bot.Builder.resources.dll
+D:\HackathonSabreBot\HackathonSabreBot\bin\fa\Microsoft.Bot.Builder.resources.dll
+D:\HackathonSabreBot\HackathonSabreBot\bin\fr\Microsoft.Bot.Builder.resources.dll
+D:\HackathonSabreBot\HackathonSabreBot\bin\ja\Microsoft.Bot.Builder.resources.dll
+D:\HackathonSabreBot\HackathonSabreBot\bin\ru\Microsoft.Bot.Builder.resources.dll
+D:\HackathonSabreBot\HackathonSabreBot\bin\zh-hans\Microsoft.Bot.Builder.resources.dll
+D:\HackathonSabreBot\HackathonSabreBot\obj\Release\HackathonSabreBot.csprojResolveAssemblyReference.cache
+D:\HackathonSabreBot\HackathonSabreBot\obj\Release\Bot Application1.dll
+D:\HackathonSabreBot\HackathonSabreBot\obj\Release\Bot Application1.pdb
+D:\HackathonSabreBot\HackathonSabreBot\bin\Flurl.dll
+D:\HackathonSabreBot\HackathonSabreBot\bin\Flurl.pdb
+D:\HackathonSabreBot\HackathonSabreBot\bin\Flurl.xml
