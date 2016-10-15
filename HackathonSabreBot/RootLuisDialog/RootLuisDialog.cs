@@ -52,18 +52,20 @@ namespace HackathonSabreBot.RootLuisDialog
             if (result.TryFindEntity(EntityBookTo, out bookFlightEntityRecommendation))
             {
                 toLocation = bookFlightEntityRecommendation.Entity;
-                
+                await context.PostAsync(toLocation);
             }
 
             if (result.TryFindEntity(EntityBookFrom, out bookFlightEntityRecommendation))
             {
                 fromLocation = bookFlightEntityRecommendation.Entity;
+                await context.PostAsync(fromLocation);
             }
 
             var dateStartDict = result.Entities[2].Resolution;
 
             var dateEndDict =  result.Entities[3].Resolution;
 
+            await context.PostAsync(dateEndDict.ToString());
             foreach (KeyValuePair<string, string> entry in dateStartDict)
             {
                 // do something with entry.Value or entry.Key
@@ -89,7 +91,7 @@ namespace HackathonSabreBot.RootLuisDialog
             using (var client = new HttpClient())
             {
                 client.BaseAddress = new Uri("https://api.test.sabre.com/v1/shop/");
-                //client.DefaultRequestHeaders.Accept.Clear();
+                client.DefaultRequestHeaders.Accept.Clear();
                 client.DefaultRequestHeaders.Add("Authorization", "Bearer T1RLAQIS5gCkjBB1EosqTm8QiBBMXRj6FRBC/Hqi9elCoT351J7dgcgRAACgGomLgr8tWgyVO8aRgKumR6zu7/GNb6EqmWybUgTrPRP7yoMwiqX2horRipgVVhB4/VHBSDcgWNGWNjZDDgWWRFyw2/njGvhWL4dRpa2GlJDANm8lJtRZ0ehrRBXabPXT0eZ4xdwDtqbQIyqCzCu2uB73bEo/S82294Evx5vKl7fyD8ahPferTNump9Ydjub14yvVXjboT1vFtPN8y8MlQQ**");
                 var response = await client.GetAsync("flights?origin=JFK&destination=LAX&departuredate=" + startDate + "&returndate=" + endDate + "&limit=1&enabletagging=true");
 
