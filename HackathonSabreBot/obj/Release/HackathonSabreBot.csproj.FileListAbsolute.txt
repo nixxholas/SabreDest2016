@@ -82,3 +82,5 @@ C:\Users\nixho\Source\Repos\SabreDest2016\HackathonSabreBot\bin\zh-hans\Microsof
 C:\Users\nixho\Source\Repos\SabreDest2016\HackathonSabreBot\obj\Release\HackathonSabreBot.csprojResolveAssemblyReference.cache
 C:\Users\nixho\Source\Repos\SabreDest2016\HackathonSabreBot\obj\Release\Bot Application1.dll
 C:\Users\nixho\Source\Repos\SabreDest2016\HackathonSabreBot\obj\Release\Bot Application1.pdb
+D:\HackathonSabreBot\HackathonSabreBot\bin\RestSharp.dll
+D:\HackathonSabreBot\HackathonSabreBot\bin\RestSharp.xml

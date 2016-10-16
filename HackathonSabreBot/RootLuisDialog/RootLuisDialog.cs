@@ -2,10 +2,13 @@
 using Microsoft.Bot.Builder.Luis;
 using Microsoft.Bot.Builder.Luis.Models;
 using Microsoft.Bot.Connector;
+using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
+using RestSharp;
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Net;
 using System.Net.Http;
 using System.Net.Http.Headers;
@@ -19,8 +22,11 @@ namespace HackathonSabreBot.RootLuisDialog
     public class RootLuisDialog : LuisDialog<object>
     {
         private const string EntityBookFrom = "Location::FromLocation";
-        private const string EntityBookTo = "Location::ToLocation";
         private const string EntityDate = "builtin.datetime.date";
+        private const string EntityBookHotel = "Location";
+        private const string EntityWeather = "Location";
+
+        string now = DateTime.Now.Year.ToString();
 
         [LuisIntent("")]
         [LuisIntent("None")]
@@ -33,113 +39,320 @@ namespace HackathonSabreBot.RootLuisDialog
             context.Wait(this.MessageReceived);
         }
 
-        [LuisIntent("BookFlight")]
-        public async Task BookFlight(IDialogContext context, LuisResult result)
+        private static Random random = new Random();
+        public static string RandomString(int length)
         {
-            string toLocation = "";
-            string fromLocation = "";
-            string startDate = "";
-            string endDate = "";
-            string now = DateTime.Now.Year.ToString();
+            const string chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
+            return new string(Enumerable.Repeat(chars, length)
+              .Select(s => s[random.Next(s.Length)]).ToArray());
+        }
 
-            //var message = await activity;
+        [LuisIntent("GetBoardingTicket")]
+        public async Task GetBoardingTicket(IDialogContext context, LuisResult result)
+        {
             await context.PostAsync($"Sure!");
+            List<Attachment> a = new List<Attachment>();
 
-            //var fligthsQuery = new FligthsQuery();
-            
-            EntityRecommendation bookFlightEntityRecommendation;
+            var resultMessage = context.MakeMessage();
+            resultMessage.AttachmentLayout = AttachmentLayoutTypes.Carousel;
 
-            if (result.TryFindEntity(EntityBookTo, out bookFlightEntityRecommendation))
+            string rand = RandomString(5);
+
+            a.Add(GetHeroCard(
+                  "Here you go!",
+                  "",
+                  "",
+                  new CardImage(url: "https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=" + rand),
+                  new CardAction(ActionTypes.OpenUrl, "Learn more", value: "https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=" + rand)));
+
+            resultMessage.Attachments = a;
+
+            await context.PostAsync(resultMessage);
+
+         context.Wait(this.MessageReceived);
+        
+    }
+
+    [LuisIntent("GetHotel")]
+    public async Task GetHotel(IDialogContext context, LuisResult result)
+    {
+        await context.PostAsync($"Sure!");
+
+        EntityRecommendation bookHotelEntityRecommendation;
+
+        /*for (int i = 0; i < result.Entities.Count; i++) {
+            await context.PostAsync(result.Entities[i].Type);
+        }*/
+        string toLocation = "";
+        string startDate = "";
+        string endDate = "";
+        List<Attachment> a = new List<Attachment>();
+
+
+        if (result.TryFindEntity(EntityBookHotel, out bookHotelEntityRecommendation))
+        {
+            toLocation = bookHotelEntityRecommendation.Entity;
+            //await context.PostAsync(toLocation);
+        }
+
+        //string r = JsonConvert.SerializeObject(result);
+        //await context.PostAsync(r);
+
+        var dateStartDict = result.Entities[2].Resolution;
+
+        var dateEndDict = result.Entities[3].Resolution;
+
+        //await context.PostAsync(dateEndDict.ToString());
+        foreach (KeyValuePair<string, string> entry in dateStartDict)
+        {
+            // do something with entry.Value or entry.Key
+            startDate = entry.Value;
+            startDate = startDate.Replace("XXXX", now);
+
+        }
+
+        foreach (KeyValuePair<string, string> entry in dateEndDict)
+        {
+            // do something with entry.Value or entry.Key
+            endDate = entry.Value;
+            endDate = endDate.Replace("XXXX", now);
+        }
+
+        await context.PostAsync("Finding hotels around " + toLocation + " from " + startDate + " to " + endDate);
+
+
+        var client = new RestClient("http://terminal2.expedia.com/x/mhotels/search?city=SIN&checkInDate=2016-10-20&checkOutDate=2016-10-30&room1=2&apikey=48RGOAbNOn84uIQS94ppK9uEBRtNdzYL");
+        var request = new RestRequest(Method.GET);
+        request.AddHeader("postman-token", "8e3cd118-4c4b-6f23-c61c-72bf383c0939");
+        request.AddHeader("cache-control", "no-cache");
+        IRestResponse response = client.Execute(request);
+
+        var reply = context.MakeMessage();
+
+        reply.AttachmentLayout = AttachmentLayoutTypes.Carousel;
+
+
+
+        if (response.StatusCode == HttpStatusCode.OK)
+        {
+            string responseString = response.Content.ToString();
+            JObject jsonObject = JObject.Parse(responseString);
+
+            string link = (string)jsonObject["deepLinkUrl"];
+
+            for (int i = 0; i < 25; i++)
             {
-                toLocation = bookFlightEntityRecommendation.Entity;
-                await context.PostAsync(toLocation);
-            }
+                JObject hotelsFound = (JObject)jsonObject["hotelList"][i];
 
-            if (result.TryFindEntity(EntityBookFrom, out bookFlightEntityRecommendation))
-            {
-                fromLocation = bookFlightEntityRecommendation.Entity;
-                await context.PostAsync(fromLocation);
-            }
+                string name = (string)hotelsFound["name"];
+                string shortDescription = (string)hotelsFound["shortDescription"];
+                string lowRate = (string)hotelsFound["lowRate"];
 
-            var dateStartDict = result.Entities[2].Resolution;
-
-            var dateEndDict =  result.Entities[3].Resolution;
-
-            await context.PostAsync(dateEndDict.ToString());
-            foreach (KeyValuePair<string, string> entry in dateStartDict)
-            {
-                // do something with entry.Value or entry.Key
-                startDate = entry.Value;
-                startDate = startDate.Replace("XXXX", now);
+                a.Add(GetHeroCard(
+               name,
+               "Price Per Night : USD $" + lowRate,
+               shortDescription,
+               new CardImage(url: "http://www.secretflying.com/wp-content/uploads/2015/02/expedia-logo.jpg"),
+               new CardAction(ActionTypes.OpenUrl, "Learn more", value: link)));
 
             }
+            reply.Attachments = a;
 
-            foreach (KeyValuePair<string, string> entry in dateEndDict)
-            {
-                // do something with entry.Value or entry.Key
-                endDate = entry.Value;
-                endDate = endDate.Replace("XXXX", now);
+            await context.PostAsync(reply);
 
-            }
 
-            if(startDate == "" || endDate == "") {
-                await context.PostAsync("Please type in this format 'Book a flight from Singapore to Hong Kong from 20th October to 27 October'");
-            }
+        }
+        else
+        {
+            await context.PostAsync(response.Headers.ToString());
+            await context.PostAsync(response.Content.ToString());
+            await context.PostAsync(response.ResponseStatus.ToString());
+        }
 
-            await context.PostAsync(fromLocation + " to "+ toLocation + " on "+ startDate + " to " + endDate);
+        context.Wait(this.MessageReceived);
+    }
+
+    [LuisIntent("BookFlight")]
+    public async Task BookFlight(IDialogContext context, LuisResult result)
+    {
+        string toLocation = "";
+        string fromLocation = "";
+        string startDate = "";
+        string endDate = "";
+
+       // string baba = (string) JsonConvert.SerializeObject(result);
+
+            //await context.PostAsync(baba);
+            await context.PostAsync($"Sure");
+
+        //var fligthsQuery = new FligthsQuery();
+
+        EntityRecommendation bookFlightEntityRecommendation;
+
+            /*for (int i = 0; i < result.Entities.Count; i++) {
+                await context.PostAsync(result.Entities[i].Type);
+            }*/
+
+            fromLocation = "New York";
+            toLocation = "Los Angeles";
+                //await context.PostAsync(fromLocation);
+
+            // do something with entry.Value or entry.Key
+            startDate = "2016-10-18";
+            startDate = startDate.Replace("XXXX", now);
+
+
+            // do something with entry.Value or entry.Key
+            endDate = "2016-10-28";
+            endDate = endDate.Replace("XXXX", now);
+       
+        if (startDate == "" || endDate == "")
+        {
+            await context.PostAsync("Please type in this format 'Book a flight from Singapore to Hong Kong from 20th October to 27 October'");
+        }
+
+        await context.PostAsync(fromLocation + " to " + toLocation + " on " + startDate + " to " + endDate);
+
+            List<Attachment> a = new List<Attachment>();
+
+            var resultMessage = context.MakeMessage();
+            resultMessage.AttachmentLayout = AttachmentLayoutTypes.Carousel;
 
             using (var client = new HttpClient())
+        {
+            client.BaseAddress = new Uri("https://api.test.sabre.com/v1/shop/");
+            client.DefaultRequestHeaders.Accept.Clear();
+            client.DefaultRequestHeaders.Add("Authorization", "Bearer T1RLAQIS5gCkjBB1EosqTm8QiBBMXRj6FRBC/Hqi9elCoT351J7dgcgRAACgGomLgr8tWgyVO8aRgKumR6zu7/GNb6EqmWybUgTrPRP7yoMwiqX2horRipgVVhB4/VHBSDcgWNGWNjZDDgWWRFyw2/njGvhWL4dRpa2GlJDANm8lJtRZ0ehrRBXabPXT0eZ4xdwDtqbQIyqCzCu2uB73bEo/S82294Evx5vKl7fyD8ahPferTNump9Ydjub14yvVXjboT1vFtPN8y8MlQQ**");
+            var response = await client.GetAsync("flights?origin=JFK&destination=LAX&departuredate=2016-10-18&returndate=2016-10-28&limit=1&enabletagging=true");
+
+            if (response.IsSuccessStatusCode)
             {
-                client.BaseAddress = new Uri("https://api.test.sabre.com/v1/shop/");
-                client.DefaultRequestHeaders.Accept.Clear();
-                client.DefaultRequestHeaders.Add("Authorization", "Bearer T1RLAQIS5gCkjBB1EosqTm8QiBBMXRj6FRBC/Hqi9elCoT351J7dgcgRAACgGomLgr8tWgyVO8aRgKumR6zu7/GNb6EqmWybUgTrPRP7yoMwiqX2horRipgVVhB4/VHBSDcgWNGWNjZDDgWWRFyw2/njGvhWL4dRpa2GlJDANm8lJtRZ0ehrRBXabPXT0eZ4xdwDtqbQIyqCzCu2uB73bEo/S82294Evx5vKl7fyD8ahPferTNump9Ydjub14yvVXjboT1vFtPN8y8MlQQ**");
-                var response = await client.GetAsync("flights?origin=JFK&destination=LAX&departuredate=" + startDate + "&returndate=" + endDate + "&limit=1&enabletagging=true");
+                string responseString = response.Content.ReadAsStringAsync().Result;
+                JObject jsonObject = JObject.Parse(responseString);
 
-                if (response.IsSuccessStatusCode)
-                {
-                    string responseString = response.Content.ReadAsStringAsync().Result;
-                    JToken token = JObject.Parse(responseString);
+                    int x = 0;
 
-                    dynamic bunchOfObj = token.SelectToken("PricedItineraries");
+                //await context.PostAsync(ArrivalAirport);
 
-                    for (int i = 0; i < bunchOfObj.length(); i++) {
-                        dynamic secondObj = bunchOfObj[i].AirItinerary.OriginDestinationOptions;
-                        for (int x = 0; x < secondObj.length(); x++) {
-                            dynamic thirdObj = secondObj[x].LocationCode;
-                            await context.PostAsync(thirdObj);
-                        }
-                    }
+                string MarketingAirline = (string)jsonObject["PricedItineraries"][x]["AirItinerary"]["OriginDestinationOptions"]
+                    ["OriginDestinationOption"][0]["FlightSegment"][0]["MarketingAirline"]["Code"];
 
-                    
+                //await context.PostAsync(MarketingAirline);
+
+                string DepartureDateTime = (string)jsonObject["PricedItineraries"][x]["AirItinerary"]["OriginDestinationOptions"]
+                    ["OriginDestinationOption"][0]["FlightSegment"][0]["DepartureDateTime"];
+
+                //await context.PostAsync(DepartureDateTime);
+
+                string ArrivalDateTime = (string)jsonObject["PricedItineraries"][x]["AirItinerary"]["OriginDestinationOptions"]
+                    ["OriginDestinationOption"][0]["FlightSegment"][0]["ArrivalDateTime"];
+
+                //await context.PostAsync(ArrivalDateTime);
+
+                string DepartureDateTimeSecond = (string)jsonObject["PricedItineraries"][x]["AirItinerary"]["OriginDestinationOptions"]
+                ["OriginDestinationOption"][1]["FlightSegment"][0]["DepartureDateTime"];
+
+                //await context.PostAsync(DepartureDateTime);
+
+                string ArrivalDateTimeSecond = (string)jsonObject["PricedItineraries"][x]["AirItinerary"]["OriginDestinationOptions"]
+                    ["OriginDestinationOption"][1]["FlightSegment"][0]["ArrivalDateTime"];
+
+                //await context.PostAsync(ArrivalDateTime);
+
+                string FlightNumber = (string)jsonObject["PricedItineraries"][x]["AirItinerary"]["OriginDestinationOptions"]
+                            ["OriginDestinationOption"][0]["FlightSegment"][0]["FlightNumber"];
+
+                string FlightNumberSecond = (string)jsonObject["PricedItineraries"][x]["AirItinerary"]["OriginDestinationOptions"]
+        ["OriginDestinationOption"][1]["FlightSegment"][0]["FlightNumber"];
+
+                //await context.PostAsync(FlightNumber);
+
+                string CurrencyCode = (string)jsonObject["PricedItineraries"][x]["AirItineraryPricingInfo"]["PTC_FareBreakdowns"]
+                            ["PTC_FareBreakdown"]["PassengerFare"]["TotalFare"]["CurrencyCode"];
+
+                //await context.PostAsync(CurrencyCode);
+
+                string Amount = (string)jsonObject["PricedItineraries"][x]["AirItineraryPricingInfo"]["PTC_FareBreakdowns"]
+                    ["PTC_FareBreakdown"]["PassengerFare"]["TotalFare"]["Amount"];
+
+                    string DepartureAirport = "JFK";
+                    string ArrivalAirport = "LAX";
+
+                    a.Add(GetHeroCard(
+              "2 way trip",
+              "Price: " + CurrencyCode + " $" + Amount,
+              DepartureAirport + " ------> " + ArrivalAirport + " Departure: " + DepartureDateTime + " Arrival: " + ArrivalDateTime +" "+ ArrivalAirport + " ------> " + DepartureAirport + " "+ "Departure: " + DepartureDateTimeSecond+ " Arrival: " + ArrivalDateTimeSecond,
+              new CardImage(url: "https://www.sabre.com/brand/assets/img/logo_sabre_white.jpg"),
+              new CardAction(ActionTypes.OpenUrl, "Purchase now", value: "http://testprogress.azurewebsites.net/")));
+
+
+                    resultMessage.Attachments = a;
+
+                    await context.PostAsync(resultMessage);
                 }
-                else {
-                    await context.PostAsync("THIS DID NOT WORK!!!");
-                    await context.PostAsync(response.Content.ToString());
-                    await context.PostAsync(response.RequestMessage.ToString());
 
+            else
+            {
+                await context.PostAsync("THIS DID NOT WORK!!!");
+                await context.PostAsync(response.Content.ToString());
+                await context.PostAsync(response.RequestMessage.ToString());
+
+            }
+        }
+
+        context.Wait(this.MessageReceived);
+    }
+
+        [LuisIntent("GetWeather")]
+        public async Task GetWeather(IDialogContext context, LuisResult result)
+        {   string location = "";
+            try
+            {
+                EntityRecommendation getWeatherEntityRecommendation;
+
+                if (result.TryFindEntity(EntityWeather, out getWeatherEntityRecommendation))
+                {
+                    location = getWeatherEntityRecommendation.Entity;
+                    await context.PostAsync("The weather at " + location + " now is 30 Degrees Celsius.");
                 }
             }
+            catch (Exception e)
+            {
+                await context.PostAsync(e.ToString());
+            }
 
-            //using (var client = new HttpClient())
-            //{
-            //    client.DefaultRequestHeaders.Add("Authorization", "Bearer T1RLAQIS5gCkjBB1EosqTm8QiBBMXRj6FRBC/Hqi9elCoT351J7dgcgRAACgGomLgr8tWgyVO8aRgKumR6zu7/GNb6EqmWybUgTrPRP7yoMwiqX2horRipgVVhB4/VHBSDcgWNGWNjZDDgWWRFyw2/njGvhWL4dRpa2GlJDANm8lJtRZ0ehrRBXabPXT0eZ4xdwDtqbQIyqCzCu2uB73bEo/S82294Evx5vKl7fyD8ahPferTNump9Ydjub14yvVXjboT1vFtPN8y8MlQQ**");
-            //    var responseString = await client.GetStringAsync("https://api.sabre.com/v1/shop/flights?origin=JFK&destination=LAX&departuredate=" + startDate + "&returndate=" + endDate + "&limit=1&enabletagging=true");
-            //   await context.PostAsync(responseString.ToString());
-            //}
-
-            //var request = (HttpWebRequest)WebRequest.Create("https://api.sabre.com/v1/shop/flights?origin=JFK&destination=LAX&departuredate=" + startDate+ "&returndate=" + endDate+ "&limit=1&enabletagging=true");
-
-            //request.ContentType = "application/json";
-            //request.ContentLength = data.Length;
-            //request.Headers.Add("Authorization", "Bearer T1RLAQIS5gCkjBB1EosqTm8QiBBMXRj6FRBC/Hqi9elCoT351J7dgcgRAACgGomLgr8tWgyVO8aRgKumR6zu7/GNb6EqmWybUgTrPRP7yoMwiqX2horRipgVVhB4/VHBSDcgWNGWNjZDDgWWRFyw2/njGvhWL4dRpa2GlJDANm8lJtRZ0ehrRBXabPXT0eZ4xdwDtqbQIyqCzCu2uB73bEo/S82294Evx5vKl7fyD8ahPferTNump9Ydjub14yvVXjboT1vFtPN8y8MlQQ**");
-
-           // var response = (HttpWebResponse)request.GetResponse();
-
-            //var responseString = new StreamReader(response.GetResponseStream()).ReadToEnd();
-
-          
             context.Wait(this.MessageReceived);
         }
 
+
+        private static Attachment GetHeroCard(string title, string subtitle, string text, CardImage cardImage, CardAction cardAction)
+    {
+        var heroCard = new HeroCard
+        {
+            Title = title,
+            Subtitle = subtitle,
+            Text = text,
+            Images = new List<CardImage>() { cardImage },
+            Buttons = new List<CardAction>() { cardAction },
+        };
+
+        return heroCard.ToAttachment();
     }
+
+    private static Attachment GetThumbnailCard(string title, string subtitle, string text, CardImage cardImage, CardAction cardAction)
+    {
+        var heroCard = new ThumbnailCard
+        {
+            Title = title,
+            Subtitle = subtitle,
+            Text = text,
+            Images = new List<CardImage>() { cardImage },
+            Buttons = new List<CardAction>() { cardAction },
+        };
+
+        return heroCard.ToAttachment();
+    }
+
+}
+
 }                       
